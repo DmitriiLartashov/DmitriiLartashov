@@ -203,7 +203,7 @@
                 <div class="offer">
                     <p>✨ <strong>Полная расшифровка кода</strong> ✨</p>
                     <p>Узнай истинное значение числа, медитацию и аффирмации под твой код. PDF-гид за 199₽.</p>
-                   <button class="btn btn-gold" id="buyBtn" onclick="window.open('https://t.me/TvoiKodBogatsva_bot', '_blank')">Купить за 199₽</button>
+                    <button class="btn btn-gold" id="buyBtn" onclick="window.open('https://t.me/TvoiKodBogatsva_bot', '_blank')">Купить за 199₽</button>
                 </div>
 
                 <div class="small-text">Поставь это число на заставку — и оно начнёт работать</div>
@@ -274,7 +274,7 @@
 
         // Состояние приложения
         let currentScreen = 'welcome';
-        let answers = [null, null, null, null, null]; // значения от 1 до 3
+        let answers = [null, null, null, null, null];
         let resultNumber = null;
         let resultDesc = '';
 
@@ -289,9 +289,8 @@
         const shareBtn = document.getElementById('shareBtn');
         const resultNumberSpan = document.getElementById('resultNumber');
         const resultDescDiv = document.getElementById('resultDesc');
-        const buyBtn = document.getElementById('buyBtn'); // ссылка на бота
 
-        // Инициализация: показать экран приветствия
+        // Показать экран
         function showScreen(screen) {
             screenWelcome.classList.add('hidden');
             screenQuestions.classList.add('hidden');
@@ -328,7 +327,6 @@
                 optDiv.addEventListener('click', function(e) {
                     const qIdx = this.dataset.q;
                     const value = parseInt(this.dataset.value);
-                    // Снять выделение с других опций в этом вопросе
                     document.querySelectorAll(`.option[data-q="${qIdx}"]`).forEach(el => {
                         el.classList.remove('selected');
                         el.querySelector('input').checked = false;
@@ -336,29 +334,27 @@
                     this.classList.add('selected');
                     this.querySelector('input').checked = true;
                     answers[qIdx] = value;
-                    // Проверить, все ли вопросы отвечены
                     const allAnswered = answers.every(a => a !== null);
                     submitBtn.disabled = !allAnswered;
                 });
             });
         }
 
-        // Вычисление числа на основе ответов
+        // Вычисление числа
         function calculateNumber() {
-            const sum = answers.reduce((acc, v) => acc + v, 0); // от 5 до 15
-            // Преобразуем в число от 1 до 100
+            const sum = answers.reduce((acc, v) => acc + v, 0);
             const min = 5, max = 15;
             const scaled = ((sum - min) / (max - min)) * 99 + 1;
             return Math.round(scaled);
         }
 
-        // Получить описание по числу (группа из 10)
+        // Описание по числу
         function getDescription(num) {
-            const idx = Math.floor((num - 1) / 10); // 0-9
+            const idx = Math.floor((num - 1) / 10);
             return descriptions[idx] || descriptions[0];
         }
 
-        // Обработчик завершения теста
+        // Завершение теста
         function finishTest() {
             resultNumber = calculateNumber();
             resultDesc = getDescription(resultNumber);
@@ -367,21 +363,17 @@
             showScreen('result');
         }
 
-        // Генерация картинки (обои) через canvas
+        // Генерация картинки
         function generateWallpaper(number, desc) {
             const canvas = document.getElementById('wallpaperCanvas');
             const ctx = canvas.getContext('2d');
             const w = canvas.width, h = canvas.height;
-
-            // Фон градиент
             const grad = ctx.createLinearGradient(0, 0, 0, h);
             grad.addColorStop(0, '#0b0c0f');
             grad.addColorStop(0.5, '#1a1d24');
             grad.addColorStop(1, '#2b2e3a');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, w, h);
-
-            // Золотые искры
             ctx.fillStyle = '#d4af37';
             for (let i = 0; i < 30; i++) {
                 ctx.beginPath();
@@ -390,40 +382,28 @@
                 ctx.fill();
             }
             ctx.globalAlpha = 1;
-
-            // Текст "Код твоего богатства"
             ctx.font = 'bold 40px "system-ui", "Helvetica Neue"';
             ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.fillText('КОД БОГАТСТВА', w/2, 150);
-
-            // Большое число
             ctx.font = 'bold 200px "system-ui", "Helvetica Neue"';
             ctx.fillStyle = '#d4af37';
             ctx.shadowColor = '#d4af37';
             ctx.shadowBlur = 30;
             ctx.fillText(number, w/2, 500);
             ctx.shadowBlur = 0;
-
-            // Описание
             ctx.font = '30px "system-ui", "Helvetica Neue"';
             ctx.fillStyle = '#e0e0e0';
             ctx.fillText(desc, w/2, 650);
-
-            // Нижняя часть
             ctx.font = '25px "system-ui", "Helvetica Neue"';
             ctx.fillStyle = '#9a9ca5';
             ctx.fillText('поставь на заставку', w/2, 850);
-
-            // Логотип сайта
             ctx.font = '20px monospace';
             ctx.fillStyle = '#5f6372';
             ctx.fillText(window.location.href, w/2, 1100);
-
             return canvas;
         }
 
-        // Скачивание обоев
         function downloadWallpaper() {
             const canvas = generateWallpaper(resultNumber, resultDesc);
             const link = document.createElement('a');
@@ -432,7 +412,6 @@
             link.click();
         }
 
-        // Поделиться
         function shareResult() {
             const text = `Мой код богатства — ${resultNumber}! ${resultDesc} Узнай свой: ${window.location.href}`;
             if (navigator.share) {
@@ -447,7 +426,6 @@
             }
         }
 
-        // События
         startBtn.addEventListener('click', () => {
             answers = [null, null, null, null, null];
             renderQuestions();
@@ -461,7 +439,6 @@
 
         shareBtn.addEventListener('click', shareResult);
 
-        // Показ экрана welcome при загрузке
         showScreen('welcome');
     </script>
 </body>
