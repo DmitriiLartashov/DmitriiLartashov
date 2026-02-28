@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Код твоего богатства</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: linear-gradient(145deg, #0b0c0f 0%, #1a1d24 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+            color: #e0e0e0;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(20, 22, 27, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 36px;
+            padding: 24px 20px;
+            box-shadow: 0 25px 50px -10px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,215,0,0.2);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+        h1, h2 {
+            font-weight: 500;
+            letter-spacing: -0.02em;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #f5e6b0, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subhead {
+            color: #9a9ca5;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        .btn {
+            background: linear-gradient(145deg, #2b2e3a, #1e2129);
+            border: 1px solid #3f4250;
+            color: #e0e0e0;
+            padding: 16px 24px;
+            border-radius: 60px;
+            font-size: 18px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 8px 0 #0d0e12;
+            margin-top: 20px;
+        }
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #0d0e12;
+        }
+        .btn-gold {
+            background: linear-gradient(145deg, #d4af37, #b28a2e);
+            border-color: #f5e6b0;
+            color: #0b0c0f;
+            font-weight: 600;
+            box-shadow: 0 8px 0 #7a601f;
+        }
+        .question {
+            margin: 20px 0;
+        }
+        .question h3 {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 12px;
+            color: #c0c2cc;
+        }
+        .option {
+            background: #262a33;
+            border-radius: 40px;
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            border: 1px solid #3d414e;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .option.selected {
+            background: #3e4252;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 1px #d4af37;
+        }
+        .option input[type="radio"] {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #5f6372;
+            border-radius: 50%;
+            margin-right: 16px;
+            position: relative;
+        }
+        .option input[type="radio"]:checked {
+            border-color: #d4af37;
+            background: #d4af37;
+            box-shadow: inset 0 0 0 4px #262a33;
+        }
+        .result-block {
+            text-align: center;
+        }
+        .big-number {
+            font-size: 120px;
+            font-weight: 700;
+            line-height: 1;
+            margin: 20px 0;
+            background: linear-gradient(145deg, #ffffff, #d4af37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+        .number-description {
+            font-size: 22px;
+            margin-bottom: 30px;
+            color: #e0e0e0;
+        }
+        .small-text {
+            color: #9a9ca5;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        .flex-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .flex-buttons .btn {
+            margin: 0;
+            padding: 14px;
+            font-size: 16px;
+        }
+        .hidden {
+            display: none;
+        }
+        .footer {
+            margin-top: 30px;
+            color: #5f6372;
+            font-size: 12px;
+            text-align: center;
+        }
+        canvas {
+            display: none;
+        }
+        .offer {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 24px;
+            border: 1px dashed #d4af37;
+        }
+        .offer p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <!-- Экран 1: Приветствие -->
+        <div id="screen-welcome" class="">
+            <h1>Код твоего богатства</h1>
+            <div class="subhead">Узнай число, которое запустит изобилие</div>
+            <div style="margin: 30px 0; text-align: center; color: #aaacb5;">
+                ✦ 5 вопросов ✦ 30 секунд ✦
+            </div>
+            <button class="btn btn-gold" id="startBtn">Начать тест →</button>
+        </div>
+
+        <!-- Экран 2: Вопросы -->
+        <div id="screen-questions" class="hidden">
+            <h2>Ответь на 5 вопросов</h2>
+            <div id="questions-container"></div>
+            <button class="btn btn-gold" id="submitBtn" disabled>Узнать свой код</button>
+        </div>
+
+        <!-- Экран 3: Результат -->
+        <div id="screen-result" class="hidden">
+            <div class="result-block">
+                <div class="big-number" id="resultNumber">47</div>
+                <div class="number-description" id="resultDesc">Твой код прорыва</div>
+                
+                <div class="flex-buttons">
+                    <button class="btn" id="saveImageBtn">Сохранить обои</button>
+                    <button class="btn" id="shareBtn">Поделиться</button>
+                </div>
+
+                <div class="offer">
+                    <p>✨ <strong>Полная расшифровка кода</strong> ✨</p>
+                    <p>Узнай истинное значение числа, медитацию и аффирмации под твой код. PDF-гид за 199₽.</p>
+                    <button class="btn btn-gold" id="buyBtn" onclick="window.open('https://t.me/ТВОЙ_БОТ', '_blank')">Купить за 199₽</button>
+                </div>
+
+                <div class="small-text">Поставь это число на заставку — и оно начнёт работать</div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="wallpaperCanvas" width="600" height="1200"></canvas>
+
+    <script>
+        // Данные вопросов (5 штук) с баллами
+        const questions = [
+            {
+                text: "Как часто ты испытываешь чувство благодарности?",
+                options: [
+                    { text: "Каждый день, замечаю мелочи", value: 3 },
+                    { text: "Иногда, по особым случаям", value: 2 },
+                    { text: "Редко, жизнь сложная штука", value: 1 }
+                ]
+            },
+            {
+                text: "Что ты чувствуешь, когда думаешь о больших деньгах?",
+                options: [
+                    { text: "Радость и предвкушение, они уже идут ко мне", value: 3 },
+                    { text: "Лёгкое волнение, но я верю в себя", value: 2 },
+                    { text: "Страх и неуверенность, это не для меня", value: 1 }
+                ]
+            },
+            {
+                text: "Как часто ты уделяешь время тишине, медитации или самоанализу?",
+                options: [
+                    { text: "Каждый день, это мой приоритет", value: 3 },
+                    { text: "Пару раз в неделю", value: 2 },
+                    { text: "Очень редко, некогда", value: 1 }
+                ]
+            },
+            {
+                text: "Твоё отношение к еде:",
+                options: [
+                    { text: "Понимаю, что главное — энергия, еда — топливо", value: 3 },
+                    { text: "Стараюсь питаться правильно, но без фанатизма", value: 2 },
+                    { text: "Люблю вкусно поесть, это моя радость", value: 1 }
+                ]
+            },
+            {
+                text: "Какая мысль приходит, когда видишь успешных людей?",
+                options: [
+                    { text: "Я тоже так могу, это моё отражение", value: 3 },
+                    { text: "Им повезло, но я порадуюсь за них", value: 2 },
+                    { text: "Зависть или раздражение", value: 1 }
+                ]
+            }
+        ];
+
+        // 10 вариантов расшифровок для групп чисел
+        const descriptions = [
+            "Ты — первооткрыватель. Твоя сила в лидерстве и новых начинаниях.",
+            "Твоя энергия — в партнёрстве и гармонии. Число притянет нужных людей.",
+            "Ты творец. Оптимизм и радость — твои магниты для денег.",
+            "Число стабильности и упорства. Твои труды скоро окупятся.",
+            "Ты свободная душа. Деньги придут через перемены и путешествия.",
+            "Ответственность и забота — твой путь к изобилию.",
+            "Духовный поиск приведёт к материальному. Доверься интуиции.",
+            "Власть и решительность. Ты способен на великие дела.",
+            "Мудрость и завершение старых циклов. Готовься к новому этапу.",
+            "Ты — проводник удачи. Число усилит твою карму."
+        ];
+
+        // Состояние приложения
+        let currentScreen = 'welcome';
+        let answers = [null, null, null, null, null]; // значения от 1 до 3
+        let resultNumber = null;
+        let resultDesc = '';
+
+        // DOM элементы
+        const screenWelcome = document.getElementById('screen-welcome');
+        const screenQuestions = document.getElementById('screen-questions');
+        const screenResult = document.getElementById('screen-result');
+        const questionsContainer = document.getElementById('questions-container');
+        const startBtn = document.getElementById('startBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const saveImageBtn = document.getElementById('saveImageBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const resultNumberSpan = document.getElementById('resultNumber');
+        const resultDescDiv = document.getElementById('resultDesc');
+        const buyBtn = document.getElementById('buyBtn'); // ссылка на бота
+
+        // Инициализация: показать экран приветствия
+        function showScreen(screen) {
+            screenWelcome.classList.add('hidden');
+            screenQuestions.classList.add('hidden');
+            screenResult.classList.add('hidden');
+            if (screen === 'welcome') screenWelcome.classList.remove('hidden');
+            if (screen === 'questions') screenQuestions.classList.remove('hidden');
+            if (screen === 'result') screenResult.classList.remove('hidden');
+            currentScreen = screen;
+        }
+
+        // Рендер вопросов
+        function renderQuestions() {
+            let html = '';
+            for (let i = 0; i < questions.length; i++) {
+                const q = questions[i];
+                html += `<div class="question" data-q="${i}">`;
+                html += `<h3>${i+1}. ${q.text}</h3>`;
+                for (let j = 0; j < q.options.length; j++) {
+                    const opt = q.options[j];
+                    const checked = answers[i] === opt.value ? 'checked' : '';
+                    html += `
+                        <div class="option ${answers[i] === opt.value ? 'selected' : ''}" data-q="${i}" data-opt="${j}" data-value="${opt.value}">
+                            <input type="radio" name="q${i}" value="${opt.value}" ${checked}>
+                            <span>${opt.text}</span>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+            }
+            questionsContainer.innerHTML = html;
+
+            // Навесить обработчики на опции
+            document.querySelectorAll('.option').forEach(optDiv => {
+                optDiv.addEventListener('click', function(e) {
+                    const qIdx = this.dataset.q;
+                    const value = parseInt(this.dataset.value);
+                    // Снять выделение с других опций в этом вопросе
+                    document.querySelectorAll(`.option[data-q="${qIdx}"]`).forEach(el => {
+                        el.classList.remove('selected');
+                        el.querySelector('input').checked = false;
+                    });
+                    this.classList.add('selected');
+                    this.querySelector('input').checked = true;
+                    answers[qIdx] = value;
+                    // Проверить, все ли вопросы отвечены
+                    const allAnswered = answers.every(a => a !== null);
+                    submitBtn.disabled = !allAnswered;
+                });
+            });
+        }
+
+        // Вычисление числа на основе ответов
+        function calculateNumber() {
+            const sum = answers.reduce((acc, v) => acc + v, 0); // от 5 до 15
+            // Преобразуем в число от 1 до 100
+            const min = 5, max = 15;
+            const scaled = ((sum - min) / (max - min)) * 99 + 1;
+            return Math.round(scaled);
+        }
+
+        // Получить описание по числу (группа из 10)
+        function getDescription(num) {
+            const idx = Math.floor((num - 1) / 10); // 0-9
+            return descriptions[idx] || descriptions[0];
+        }
+
+        // Обработчик завершения теста
+        function finishTest() {
+            resultNumber = calculateNumber();
+            resultDesc = getDescription(resultNumber);
+            resultNumberSpan.innerText = resultNumber;
+            resultDescDiv.innerText = resultDesc;
+            showScreen('result');
+        }
+
+        // Генерация картинки (обои) через canvas
+        function generateWallpaper(number, desc) {
+            const canvas = document.getElementById('wallpaperCanvas');
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width, h = canvas.height;
+
+            // Фон градиент
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, '#0b0c0f');
+            grad.addColorStop(0.5, '#1a1d24');
+            grad.addColorStop(1, '#2b2e3a');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, w, h);
+
+            // Золотые искры
+            ctx.fillStyle = '#d4af37';
+            for (let i = 0; i < 30; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random() * w, Math.random() * h, Math.random() * 3, 0, 2*Math.PI);
+                ctx.globalAlpha = 0.3;
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+
+            // Текст "Код твоего богатства"
+            ctx.font = 'bold 40px "system-ui", "Helvetica Neue"';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText('КОД БОГАТСТВА', w/2, 150);
+
+            // Большое число
+            ctx.font = 'bold 200px "system-ui", "Helvetica Neue"';
+            ctx.fillStyle = '#d4af37';
+            ctx.shadowColor = '#d4af37';
+            ctx.shadowBlur = 30;
+            ctx.fillText(number, w/2, 500);
+            ctx.shadowBlur = 0;
+
+            // Описание
+            ctx.font = '30px "system-ui", "Helvetica Neue"';
+            ctx.fillStyle = '#e0e0e0';
+            ctx.fillText(desc, w/2, 650);
+
+            // Нижняя часть
+            ctx.font = '25px "system-ui", "Helvetica Neue"';
+            ctx.fillStyle = '#9a9ca5';
+            ctx.fillText('поставь на заставку', w/2, 850);
+
+            // Логотип сайта
+            ctx.font = '20px monospace';
+            ctx.fillStyle = '#5f6372';
+            ctx.fillText(window.location.href, w/2, 1100);
+
+            return canvas;
+        }
+
+        // Скачивание обоев
+        function downloadWallpaper() {
+            const canvas = generateWallpaper(resultNumber, resultDesc);
+            const link = document.createElement('a');
+            link.download = `kod_${resultNumber}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Поделиться
+        function shareResult() {
+            const text = `Мой код богатства — ${resultNumber}! ${resultDesc} Узнай свой: ${window.location.href}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Код твоего богатства',
+                    text: text,
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(text).then(() => {
+                    alert('Ссылка скопирована!');
+                });
+            }
+        }
+
+        // События
+        startBtn.addEventListener('click', () => {
+            answers = [null, null, null, null, null];
+            renderQuestions();
+            showScreen('questions');
+            submitBtn.disabled = true;
+        });
+
+        submitBtn.addEventListener('click', finishTest);
+
+        saveImageBtn.addEventListener('click', downloadWallpaper);
+
+        shareBtn.addEventListener('click', shareResult);
+
+        // Показ экрана welcome при загрузке
+        showScreen('welcome');
+    </script>
+</body>
+</html>
